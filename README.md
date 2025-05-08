@@ -28,7 +28,8 @@
 
 ```python
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout, QTimer
+from PyQt5.QtCore import QTimer
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QVBoxLayout
 from pymodbus.client import ModbusTcpClient
 
 class HMIApp(QWidget):
@@ -64,7 +65,7 @@ class HMIApp(QWidget):
             self.status_label.setText('Failed to connect to PLC')
 
     def toggle_output(self):
-        if self.client.is_connected():
+        if self.client.connected:
             # Example: Write to coil address 0 (Mitsubishi Y0)
             self.client.write_coil(0, True)
             self.status_label.setText('Output Toggled')
@@ -72,7 +73,7 @@ class HMIApp(QWidget):
             self.status_label.setText('Not connected to PLC')
 
     def update_status(self):
-        if self.client.is_connected():
+        if self.client.connected:
             response = self.client.read_input_registers(0, 1)
             if response.isError():
                 self.status_label.setText('Error reading input register')
